@@ -1,0 +1,98 @@
+#!/bin/bash
+# Automatic APP INSTALLER FOR VESTA CP
+# THIS SOFTWARE IS PROVIDED FOR FREE BY JOE MATTOS OWNER OF CDNMALL.COM.
+# BY USING THIS SOFTWARE YOU AGREE NOT TO TAKE ANY CREDIT FOR THIS SOFTWARE OR ITS SOURCE CODE, SELL THIS SOFTWARE OR ITS SOURCE CODE, OR USE ANY SOURCE CODE FOR ANYTHING WITH OUT MY CONSENT. 
+
+  # Include vesta config
+  source $VESTA/func/main.sh
+  source $VESTA/conf/vesta.conf
+
+  # Users Username
+  user=$1
+    if [ -z "$user" ]; then
+        echo "Please Enter A Username"
+        exit $E_NOTEXIST
+    fi
+  
+  # Users Install Directory
+  APPI_USER_INSTALL=$2
+    if [ -z "$APPI_USER_INSTALL" ]; then
+        echo "Please Enter A Install Directory"
+        exit $E_NOTEXIST
+    fi
+    
+  # Users Public HTML Path 
+  APPI_USER_HTTP=$3
+    if [[ $APPI_USER_HTTP != "public_html" && $APPI_USER_HTTP != "public_shtml" ]]; then
+        echo "Invalid Public HTML Path"
+        exit $E_NOTEXIST
+    fi
+    
+  # Users Domain
+  APPI_USER_DOMAIN=$4
+    if [ -z "$APPI_USER_DOMAIN" ]; then
+        echo "Please Enter A Domain"
+        exit $E_NOTEXIST
+    fi
+  
+  # Users selected App Package
+  APPI_USER_PACKAGE=$5
+    if [ -z "$APPI_USER_PACKAGE" ]; then
+        echo "Please Enter A Package"
+        exit $E_NOTEXIST
+    fi
+  
+  # Users selected App Package Version
+  APPI_USER_PACKAGEV=$6
+    if [ -z "$APPI_USER_PACKAGEV" ]; then
+        echo "Please Enter the Version of $APPI_USER_PACKAGE you wish to install"
+        exit $E_NOTEXIST
+    fi
+  
+  # Users Admin Username
+  APPI_SD_USER=$7
+    if [ -z "$APPI_SD_USER" ]; then
+        echo "Please Enter A Admin Username"
+        exit $E_NOTEXIST
+    fi
+    
+  # Users Admin Email
+  APPI_SD_EMAIL=$8
+    if [ -z "$APPI_SD_EMAIL" ]; then
+        echo "Please Enter A Email Address"
+        exit $E_NOTEXIST
+    fi
+  
+  # Users Admin New Password
+  APPI_SD_PASS=$(cat /dev/urandom| tr -dc 'a-z0-9A-Z' | head -c 12)
+  
+  # Location of app packages no trailing slash
+  APPI="$VESTA/func/app-installer/scripts"
+  
+  # Make Location of User Install Directory with trailing slash
+  APPI_USER_INSTALLDIR="$HOMEDIR/$user/web/$APPI_USER_DOMAIN/$APPI_USER_HTTP$APPI_USER_INSTALL/"
+  
+  # Make Location of User Install Directory without trailing slash
+  APPI_INSTALLDIR="$HOMEDIR/$user/web/$APPI_USER_DOMAIN/$APPI_USER_HTTP$APPI_USER_INSTALL"
+
+  # Include web app installer config
+  source $VESTA/func/app-installer/base.sh
+  source $VESTA/func/app-installer/scripts.sh
+
+  # Check User
+  is_object_valid 'user' 'USER' "$user"
+  is_object_unsuspended 'user' 'USER' "$user"
+  is_object_valid 'web' 'DOMAIN' "$APPI_USER_DOMAIN"
+
+
+  # Start Install start base and scripts files
+  if [ "$(declare -F "INSTALL_$APPI_USER_PACKAGE"_"$APPI_USER_PACKAGEV")" ]; then 
+    BASE_CHECK
+    INSTALL_$APPI_USER_PACKAGE"_"$APPI_USER_PACKAGEV
+    BASE_CLEAN_UP 
+    echo "Congratulations, $APPI_USER_PACKAGE $APPI_USER_PACKAGEV has successfully been installed. Please check your email for login credentials."
+    exit $OK
+  else
+    echo "NO SUCH APP EXISTS - $APPI_USER_PACKAGE $APPI_USER_PACKAGEV" 
+    exit $E_NOTEXIST
+  fi
