@@ -115,7 +115,7 @@ function INSTALL_PrestaShop_1.6.1.1() {
       fi
 }
 
-function INSTALL_Joomla_3.4.1() {
+function INSTALL_Joomla_3.5.0() {
 
   APPI_QST="administrator/"
 

@@ -40,7 +40,7 @@
                                   "img_link" => "textpattern.png"),
                                   
                   "Joomla"  => array ("name" => "Joomla", 
-                                  "version" => "3.4.3", 
+                                  "version" => "3.5.0", 
                                   "desc" => "Joomla! is an award-winning open source CMS for building powerful websites.",
                                   "cat" => "CMS",
                                   "link" => "joomla.org",
